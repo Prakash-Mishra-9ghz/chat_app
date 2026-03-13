@@ -14,6 +14,7 @@ body{
     justify-content: center;
     align-items: center;
     background-color: #ebebee;
+    /* height: 100vh; */
 }
 
 .title{
