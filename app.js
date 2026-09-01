@@ -1,36 +1,37 @@
-const express = require('express')
-const path = require('path')
-const app = express()
-const PORT = process.env.PORT || 4000
-const server = app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
+require('dotenv').config();
 
-const io = require('socket.io')(server)
+const path = require('path');
+const http = require('http');
+const express = require('express');
+const cors = require('cors');
+const { Server } = require('socket.io');
 
-app.use(express.static(path.join(__dirname, 'public')))
+const connectDB = require('./config/db');
+const registerSocketHandlers = require('./sockets');
 
-let socketCount = new Set()
+const PORT = process.env.PORT || 4000;
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
-io.on('connection', onConnected)
+const app = express();
 
-function onConnected(socket) {
-    console.log(socket.id)
-    socketCount.add(socket.id)
+// --- middleware ---
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
+app.use(express.json());
 
-    io.emit('clients-total', socketCount.size)
+// Serve the legacy static frontend for now. Once the React (Vite) client
+// in /client is built, this will be swapped for serving client/dist and
+// this line can be removed.
+app.use(express.static(path.join(__dirname, 'public')));
 
-    socket.on('disconnect', () => {
-        console.log('socket disconnected', socket.id)
-        socketCount.delete(socket.id)
-        io.emit('clients-total', socketCount.size)
-    })
+// --- server + socket.io ---
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: CLIENT_URL, credentials: true },
+});
 
-    socket.on('message', (data) => {
-        console.log(data)
-        socket.broadcast.emit('chat-message', data)
-    })
+registerSocketHandlers(io);
 
-    socket.on('feedback', (data) => {
-        socket.broadcast.emit('feedback', data)
-    })
-
-}
+// --- boot ---
+connectDB().then(() => {
+  server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+});
