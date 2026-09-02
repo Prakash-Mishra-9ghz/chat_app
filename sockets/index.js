@@ -1,13 +1,9 @@
-// Socket.io connection handling.
-//
-// NOTE: this still contains the original single-broadcast-room behavior
-// from the pre-upgrade app. It will be replaced with room-aware handlers
-// (join-room, send-message, typing, presence, etc.) starting in Phase 3.
-// Kept as-is here so Phase 0 is a pure restructure with no behavior change.
+const socketAuth = require('../middleware/socketAuth.middleware');
 
 const socketCount = new Set();
 
 function registerSocketHandlers(io) {
+  io.use(socketAuth);
   io.on('connection', (socket) => onConnected(io, socket));
 }
 

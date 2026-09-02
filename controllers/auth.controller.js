@@ -18,7 +18,10 @@ async function register(req, res) {
       passwordHash
     });
     return res.status(201).json({
-      newUser, 
+      user: {
+        username: newUser.username,
+        email: newUser.email
+      }, 
       message: "user registered successfully"
     });
   }catch(err){
@@ -31,6 +34,9 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
+  if(!email || !password) 
+    return res.status(400).json({message: "invalid email or password"});
+
   try{
     const userExist = await User.findOne({email}).select('+passwordHash');
 
@@ -40,7 +46,7 @@ async function login(req, res) {
     const passwordMatch = await bcrypt.compare(password, userExist.passwordHash)
 
     if(!passwordMatch) 
-      return res.status(404).json({ message: 'email or password wrong' });
+      return res.status(404).json({ message: 'Email or password is incorrect.' });
     
     const payload = userExist._id;
 
