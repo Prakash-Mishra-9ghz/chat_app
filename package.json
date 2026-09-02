@@ -16,7 +16,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "server": "nodemon app.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently -n SERVER,CLIENT -c green,cyan \"npm:server\" \"npm:client\"",
+    "install:all": "npm install && npm install --prefix client"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -26,6 +29,7 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "concurrently": "^10.0.5",
     "nodemon": "^3.1.14"
   }
 }
