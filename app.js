@@ -8,6 +8,7 @@ const { Server } = require('socket.io');
 
 const connectDB = require('./config/db');
 const registerSocketHandlers = require('./sockets');
+const authRoutes = require('./routes/auth.routes');
 
 const PORT = process.env.PORT || 4000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -22,6 +23,8 @@ app.use(express.json());
 // in /client is built, this will be swapped for serving client/dist and
 // this line can be removed.
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/api/auth', authRoutes);
 
 // --- server + socket.io ---
 const server = http.createServer(app);
