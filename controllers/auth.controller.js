@@ -35,18 +35,18 @@ async function login(req, res) {
   const { email, password } = req.body;
 
   if(!email || !password) 
-    return res.status(400).json({message: "invalid email or password"});
+    return res.status(400).json({message: "Invalid email or password"});
 
   try{
     const userExist = await User.findOne({email}).select('+passwordHash');
 
     if(!userExist) 
-      return res.status(404).json({ message: "Email or password is incorrect." });
+      return res.status(401).json({ message: "Email or password is incorrect." });
 
     const passwordMatch = await bcrypt.compare(password, userExist.passwordHash)
 
     if(!passwordMatch) 
-      return res.status(404).json({ message: 'Email or password is incorrect.' });
+      return res.status(401).json({ message: 'Email or password is incorrect.' });
     
     const payload = userExist._id;
 
