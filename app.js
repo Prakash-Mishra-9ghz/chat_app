@@ -9,6 +9,7 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const registerSocketHandlers = require('./sockets');
 const authRoutes = require('./routes/auth.routes');
+const roomRoutes = require('./routes/room.routes');
 
 const PORT = process.env.PORT || 4000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/rooms', roomRoutes);
 
 // --- server + socket.io ---
 const server = http.createServer(app);
