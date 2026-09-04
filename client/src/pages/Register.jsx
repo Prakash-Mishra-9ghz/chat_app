@@ -12,52 +12,59 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
-    try {
 
+    try {
       await register(username, email, password);
       navigate('/');
-      
-    }catch (err) {
+    } catch (err) {
       setError(err?.response?.data?.message || 'Registration failed');
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 320, margin: '4rem auto' }}>
-      <h1>Register</h1>
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
-      <div>
-        <label>Username</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Register</button>
-      <p>
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
-    </form>
+    <div className="auth-shell">
+      <form className="auth-card" onSubmit={handleSubmit}>
+        <div>
+          <h1>Register</h1>
+        </div>
+        {error && <p className="error-banner">{error}</p>}
+        <div className="form-stack">
+          <div className="field">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <button type="submit" className="btn-primary">Register</button>
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+      </form>
+    </div>
   );
 }

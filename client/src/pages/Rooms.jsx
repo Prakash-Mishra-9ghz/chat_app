@@ -102,13 +102,15 @@ export default function Rooms() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Rooms</h1>
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <h1>Rooms</h1>
+      </div>
+      {error && <p className="error-banner">{error}</p>}
 
-      <section>
+      <section className="panel">
         <h2>Create a room</h2>
-        <form onSubmit={handleCreateRoom}>
+        <form onSubmit={handleCreateRoom} className="create-room-form">
           <input
             type="text"
             placeholder="Room name"
@@ -129,36 +131,52 @@ export default function Rooms() {
               required
             />
           )}
-          <button type="submit">Create</button>
+          <button type="submit" className="btn-primary">Create</button>
         </form>
       </section>
 
       <section>
         <h2>My rooms</h2>
-        <ul>
-          {myRooms.map((room) => (
-            <li key={room._id}>
-              {room.name} ({room.type})
-            </li>
-          ))}
-        </ul>
+        {myRooms.length === 0 ? (
+          <p className="empty-state">You haven't joined any rooms yet.</p>
+        ) : (
+          <ul className="room-list">
+            {myRooms.map((room) => (
+              <li key={room._id} className="room-row">
+                <span className="room-name">
+                  <span className="status-dot" />
+                  {room.name}
+                </span>
+                <span className="room-meta">{room.type}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section>
-        <h2>Browse all rooms</h2>
-        <ul>
-          {allRooms.map((room) => (
-            <li key={room._id}>
-              {room.name}
-              {room.type === 'private'  && ' 🔒'}
-              <button onClick={() => handleJoinClick(room)}>Join</button>
-            </li>
-          ))}
-        </ul>
+        <h2>Browse rooms</h2>
+        {allRooms.length === 0 ? (
+          <p className="empty-state">No rooms yet — create the first one above.</p>
+        ) : (
+          <ul className="room-list">
+            {allRooms.map((room) => (
+              <li key={room._id} className="room-row">
+                <span className="room-name">
+                  {room.name}
+                  {room.type === 'private' && <span className="badge-lock">🔒</span>}
+                </span>
+                <button type="button" className="btn-ghost" onClick={() => handleJoinClick(room)}>
+                  Join
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {joiningRoomId && (
-        <form onSubmit={handleJoinSubmit}>
+        <form onSubmit={handleJoinSubmit} className="panel join-prompt">
           <p>This room is private — enter the password to join.</p>
           <input
             type="password"
@@ -166,8 +184,8 @@ export default function Rooms() {
             onChange={(e) => setJoinPassword(e.target.value)}
             required
           />
-          <button type="submit">Join</button>
-          <button type="button" onClick={() => setJoiningRoomId(null)}>
+          <button type="submit" className="btn-primary">Join</button>
+          <button type="button" className="btn-ghost" onClick={() => setJoiningRoomId(null)}>
             Cancel
           </button>
         </form>

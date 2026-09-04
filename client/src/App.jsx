@@ -16,9 +16,9 @@ function App() {
         element={
           <ProtectedRoute>
             <div>
-              <div style={{ textAlign: 'right', padding: '1rem' }}>
-                <button onClick={logout}>Log out</button>
-              </div>
+              <div style={{ textAlign: 'right', padding: '16px 24px 0' }}>
+              <button className="btn-ghost" onClick={logout}>Log out</button>
+            </div>
               <Rooms />
             </div>
           </ProtectedRoute>
