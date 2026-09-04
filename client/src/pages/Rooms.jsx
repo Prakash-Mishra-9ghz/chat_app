@@ -101,6 +101,19 @@ export default function Rooms() {
     }
   }
 
+  async function handleLeaveRoom(roomId) { 
+    try {
+      await api.post(`/rooms/${roomId}/leave`); 
+      // On success, refetch both lists to reflect the change 
+      const myRoomsResponse = await api.get('/rooms/mine'); 
+      setMyRooms(myRoomsResponse.data); 
+      const roomsResponse = await api.get('/rooms'); 
+      setAllRooms(roomsResponse.data); 
+    } catch (err) { 
+      setError(err.response?.data?.error || 'Failed to leave room. Please try again.'); 
+    } 
+  }
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -147,7 +160,12 @@ export default function Rooms() {
                   <span className="status-dot" />
                   {room.name}
                 </span>
-                <span className="room-meta">{room.type}</span>
+                <span className="room-meta">{room.type}
+                  <button type="button" className="btn-ghost" 
+                  onClick={() => handleLeaveRoom(room._id)} > 
+                  Leave
+                  </button>
+                </span>
               </li>
             ))}
           </ul>
